@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import  Swal  from "sweetalert2";
-
+import Swal from "sweetalert2";
 
 const initialState = {
   cartItems: [],
@@ -15,21 +14,29 @@ const cartSlice = createSlice({
         (item) => item._id === action.payload._id
       );
 
-      if(!existingItem) {
-        state.cartItems.push(action.payload)
+      if (!existingItem) {
+        state.cartItems.push(action.payload);
         Swal.fire({
-            position: "top-end",
-            icon: "success",
-            title: "Товар добавлен в корзину",
-            showConfirmButton: false,
-            timer: 1500
-          });
+          position: "top-end",
+          icon: "success",
+          title: "Товар добавлен в корзину",
+          showConfirmButton: false,
+          timer: 1500,
+        });
       } else {
         Swal.fire("Товар уже находится в корзине!");
       }
     },
+    removeFromCart: (state, action) => {
+      state.cartItems = state.cartItems.filter(
+        (item) => item._id !== action.payload._id
+      );
+    },
+    clearCart: (state) => {
+      state.cartItems = []
+    }
   },
 });
 
-export const {addToCart} = cartSlice.actions
-export default cartSlice.reducer
+export const { addToCart, removeFromCart, clearCart } = cartSlice.actions;
+export default cartSlice.reducer;
