@@ -25,7 +25,6 @@ const TopSellers = () => {
   const [selectedCategory, setSelectedCategory] = useState("Поиск по жанру");
 
   const {data: books = []} = useFetchAllBooksQuery()
-  console.log(books)
 
   const filteredBooks =
     selectedCategory === "Поиск по жанру"
@@ -34,7 +33,6 @@ const TopSellers = () => {
           (book) => book.category === selectedCategory.toLowerCase()
         );
 
-  console.log(filteredBooks);
 
   return (
     <div className="py-10">
