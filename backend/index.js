@@ -17,9 +17,11 @@ app.use(cors({
 
 const bookRoutes = require("./src/books/book.route")
 const orderRoutes = require("./src/orders/order.route")
+const userRoutes = require("./src/users/user.route")
 
 app.use("/api/books", bookRoutes)
 app.use("/api/orders", orderRoutes)
+app.use("/api/auth", userRoutes)
 
 
 const MONGODB_URL = process.env.DB_URL
