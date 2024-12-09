@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { useCreateOrderMutation } from "../../redux/features/orders/ordersApi";
+import Swal from "sweetalert2";
 
 const CheckoutPage = () => {
   const cartItems = useSelector((state) => state.cart.cartItems);
@@ -19,12 +21,15 @@ const CheckoutPage = () => {
         formState: { errors },
       } = useForm();
 
+      const [createOrder, {isLoading, error}] = useCreateOrderMutation()
+      const navigate = useNavigate()
+
       const [isChecked, setIsChecked] = useState(false)
-      const onSubmit = (data) => {
+      const onSubmit = async (data) => {
         const newOrder = {
             name: data.name,
             email: currentUser?.email,
-            adress: {
+            address: {
                 city: data.city,
                 country: data.country,
                 state: data.state,
@@ -35,7 +40,27 @@ const CheckoutPage = () => {
             totalPrice: totalPrice,
         }
 
-        console.log(newOrder)
+        try {
+          await createOrder(newOrder).unwrap()
+          Swal.fire({
+            title: "Оформление заказа",
+            text: "Ваш заказ успешно оформлен!",
+            icon: "warning",
+            showCancelButton: false,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Хорошо"
+          });
+          navigate("/orders")
+        } catch (error) {
+          console.error("Error placing order", error)
+          alert("Ошибка оформления заказа")
+        }
+
+      }
+
+      if(isLoading) {
+        return <div>Загрузка...</div>
       }
 
   return (
@@ -44,9 +69,6 @@ const CheckoutPage = () => {
         <div className="container max-w-screen-lg mx-auto">
           <div>
             <div>
-              <h2 className="font-semibold text-xl text-gray-600 mb-2">
-                Наличные в рассрочку
-              </h2>
               <p className="text-gray-500 mb-2">К оплате: {totalPrice} ₽</p>
               <p className="text-gray-500 mb-6">
                 Товары: {cartItems.length > 0 ? cartItems.length : 0}
