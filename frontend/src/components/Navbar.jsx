@@ -25,7 +25,7 @@ const navigation = [
     href: "/cart",
   },
   {
-    name: "Check out",
+    name: "Оформление заказа",
     href: "/checkout",
   },
 ];
