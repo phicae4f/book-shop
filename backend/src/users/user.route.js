@@ -31,7 +31,7 @@ router.post("/admin", async (req, res) => {
     })
   } catch (error) {
     console.error("Failed to login as admin");
-    res.status(401).send({ message: "Failed to login as admin" });
+    return res.status(401).send({ message: "Failed to login as admin" });
   }
 });
 

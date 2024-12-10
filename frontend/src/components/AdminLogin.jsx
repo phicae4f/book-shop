@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import getBaseUrl from '../utils/baseURL'
+
+import axios from "axios"
 
 const AdminLogin = () => {
 
@@ -17,7 +20,23 @@ const AdminLogin = () => {
       const onSubmit = async (data) => {
         console.log(data)
         try{
-            navigate("/")
+          const response = await axios.post(`${getBaseUrl()}/api/auth/admin`, data, {
+            headers: {
+              "Content-Type": "application/json",
+            }
+          })
+          const auth = response.data
+          console.log(auth)
+          if(auth.token) {
+            localStorage.setItem("token", auth.token)
+            setTimeout(() => {
+              localStorage.removeItem("token")
+              alert("Истек срок действия токена. Необходимо авторизоваться повторно")
+              navigate("/")
+            }, 3600 * 1000)
+          }
+          alert("Вы вошли как админ")
+          navigate("/dashboard")
         }catch(error){
           setMessage("Введите корректный email или пароль")
           console.log(error)
